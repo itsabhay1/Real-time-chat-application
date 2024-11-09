@@ -1,1 +1,1 @@
-Real time chat application focused more on backend
+Real time chat application focused more on backend - Chatflix
