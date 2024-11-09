@@ -1,1 +1,1 @@
-Real time chat application focused more on backend
+This is the final project given by BDCOE which is real time chat application - Chatflix
