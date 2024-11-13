@@ -212,14 +212,14 @@ const googleAuthCallback = asyncHandler(async (req, res) => {
         if (!req.user) {
             console.log("User  in googleAuthCallback:", req.user);
             throw new ApiError(401, "Authentication failed"); // Handle case where user is not found
-          }
+        }
         // Successful authentication, generate tokens and return response
         const { user, accessToken, refreshToken } = req.user; // This comes from the passport callback
         const options = {
             httpOnly: true,
             secure: true
         };
-    
+
         return res.status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
@@ -230,6 +230,29 @@ const googleAuthCallback = asyncHandler(async (req, res) => {
     }
 });
 
+//searchUser
+const searchUser = asyncHandler(async (req, res) => {
+    try {
+        const { search } = req.body
+
+        const query = new RegExp(search, "i")
+        const user = await User.find({
+            "$or": [
+                { name: query },
+                { email: query }
+            ]
+        }).select("-password -refreshToken")
+        return res.status(200)
+            .json(new ApiResponse(200, {
+                data: user,
+                success: true
+            }, "user found"))
+    } catch (error) {
+        throw new ApiError(500, error?.message || "Internal Server Error")
+
+    }
+})
+
 
 export {
     registerUser,
@@ -237,5 +260,6 @@ export {
     logoutUser,
     refreshAccessToken,
     googleAuth,
-    googleAuthCallback
+    googleAuthCallback,
+    searchUser
 };
