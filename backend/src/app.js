@@ -8,12 +8,14 @@ import { User } from "./models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import session from "express-session";
+import connectDB from "./db/index.js";
+import { app, server } from "./socket.io/index.js";
 
 dotenv.config({
   path: "../.env",
 });
 
-const app = express();
+// const app = express();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -106,4 +108,15 @@ app.use("/api/v1/users", userRouter);
 app.get('/auth/google', googleAuth);
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), googleAuthCallback);
 
-export { app };
+connectDB()
+.then(() => {
+    server.listen(process.env.PORT || 8000, () => {
+        console.log(`Server is listening at port:${process.env.PORT}`);
+    }) 
+})
+.catch((err) => {
+    console.log("MONGODB connection failed !!!!" , err);
+
+})
+
+// export { app };
