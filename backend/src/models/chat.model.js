@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const chatSchema = new mongoose.Schema(
     {
-        chatname: {
+        chatName: {
             type: String,
             trim: true
         },
@@ -20,7 +20,7 @@ const chatSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Message"
         },
-        groupAmin: [
+        groupAdmin: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "User"
