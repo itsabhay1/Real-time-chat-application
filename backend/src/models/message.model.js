@@ -16,6 +16,11 @@ const messageSchema = new mongoose.Schema(
         videoUrl: {
             type: String,
         },
+        chat: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Chat',
+            required: true,
+          },
         seen: {
             type: Boolean,
             default: false

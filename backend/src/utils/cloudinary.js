@@ -1,6 +1,5 @@
-import {v2 as cloudinary} from "cloudinary" 
-import fs from "fs"
-
+import { v2 as cloudinary } from "cloudinary"
+import { Readable } from "stream";
 
 
 cloudinary.config({
@@ -9,23 +8,38 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (fileBuffer, resourceType = "auto") => {
     try {
-        if(!localFilePath) return null
-        // upload the file on cloudinary
+        if (!fileBuffer) return null;
 
-       const response= await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto"
-        })
-        // file has been uploaded successfully
-       console.log("file is uploaded on cloudinary", response.url);
-        return response;
+        // Create a readable stream from the file buffer
+        const bufferStream = new Readable();
+        bufferStream.push(fileBuffer);  // Push the file buffer into the stream
+        bufferStream.push(null);  // Indicating the end of the stream
+
+        // Return a Promise to handle the async upload
+        return new Promise((resolve, reject) => {
+            bufferStream.pipe(
+                cloudinary.uploader.upload_stream(
+                    {
+                        resource_type: resourceType,
+                    },
+                    (error, result) => {
+                        if (error) {
+                            console.error("Error uploading to Cloudinary:", error);
+                            reject(error); 
+                        } else {
+                            console.log("File uploaded to Cloudinary:", result.secure_url);
+                            resolve(result); 
+                        }
+                    }
+                )
+            );
+        });
     } catch (error) {
-        fs.unlinkSync(localFilePath)
-        // remove the locally saved temporary file as the upload operation got failed
+        console.error("Error in uploadOnCloudinary:", error);
         return null;
     }
-}
+};
 
-
-export {uploadOnCloudinary}
+export { uploadOnCloudinary };

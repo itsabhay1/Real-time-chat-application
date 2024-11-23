@@ -99,13 +99,15 @@ app.use(passport.session());
 import { googleAuth, googleAuthCallback } from './controllers/user.controller.js';
 import userRouter from './routes/user.routes.js';
 import chatRouter from './routes/chat.routes.js';
+import messageRouter from './routes/message.routes.js'
 
 app.get('/', (req, res) => {
   res.send("Server is live");
 });
 
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/chats",chatRouter)
+app.use("/api/v1/chats",chatRouter);
+app.use("/api/v1/message", messageRouter);
 
 app.get('/auth/google', googleAuth);
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), googleAuthCallback);

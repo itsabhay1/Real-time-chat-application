@@ -1,17 +1,12 @@
 import { Router } from "express";
 import {loginUser ,logoutUser , registerUser, refreshAccessToken, searchUser } from "../controllers/user.controller.js";
-import {upload} from "../middlewares/multer.middleware.js";
+import {uploadProfilePhoto} from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router()
 
 router.route("/register").post(
-    upload.fields([
-        {
-            name: "image",
-            maxCount: 1
-        }
-    ]),
+    uploadProfilePhoto,
     registerUser
 )
 
