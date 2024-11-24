@@ -26,7 +26,7 @@ const generateAcessAndRefreshTokens = async (userId) => {
 }
 const registerUser = asyncHandler(async (req, res) => {
 
-    const imageFile = req.files["image"] ? req.files["image"][0] : null;
+    const imageFile = req.file ? req.file : null;
 
     //taking user details from frontend
     const { fullName, email, username, password } = req.body
@@ -39,8 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
     let uploadResponse;
     if (imageFile) {
         try {
-            uploadResponse = await uploadOnCloudinary(imageFile.path);
-            fs.unlinkSync(imageFile.path);
+            uploadResponse = await uploadOnCloudinary(imageFile.buffer);
         } catch (error) {
             return res.status(500).json({ message: "Image upload to Cloudinary failed." });
         }
