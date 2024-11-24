@@ -25,7 +25,11 @@ const chatSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "User"
             }
-        ]
+        ],
+        room_uuid: {
+            type: String, 
+            unique: true
+        }
     },
     {
         timestamps: true
